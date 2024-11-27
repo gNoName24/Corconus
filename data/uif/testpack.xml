@@ -1,5 +1,5 @@
 <testpack>
-	<loadstyle file="simplestyle.xml"/>
+	<loadstyle file="base.xml"/>
 	<scene name="uiTester">
 		<data>
 			<object type="text">

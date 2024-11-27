@@ -6,13 +6,16 @@ class crcecore {
   // Локализация
   String lang = "ru";
   
+  String scene = "menu";
+  
   void setup() {
     langSetup();
+    uifxml.importPack("corconus.xml");
   }
   
   void draw() {
     fill(255);
-    //sltext("{test1}--- {test222}", 0, 0, 40);
+    uifxml.scenes.get(scene).render();
   }
   
   void mousePressed() {
@@ -23,17 +26,6 @@ class crcecore {
     
   }
   
-  void csbutton(float x, float y, float sx, float sy) {
-    if(tap(x, y, sx, sy)) {stroke(191);}
-    sblockRound(x, y, sx, sy, 6);
-    stroke(0);
-  }
-  void csbutton2(float x, float y, float sx, float sy) {
-    fill(32);
-    if(tap(x, y, sx, sy)) {stroke(191);}
-    sblockRound(x, y, sx, sy, 6);
-    stroke(0);
-  }
   void csbutton2_image(float x, float y, float sx, float sy, PImage image) {
     fill(32);
     if(tap(x, y, sx, sy)) {stroke(191);}

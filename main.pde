@@ -10,7 +10,7 @@ void setup() {
   //uif.loadPack("testpack.json");
   //uif.changeLang("en");
   uifxml.setup();
-  uifxml.importPack("testpack.xml");
+  //uifxml.importPack("testpack.xml");
   crcecore.setup();
 }
 
@@ -39,7 +39,7 @@ void draw() {
     }
   }*/
   
-  uifxml.scenes.get("uiTester").render();
+  /*uifxml.scenes.get("uiTester").render();
   
   ArrayList<JSONObject> events = uifxml.getEvents("button.press");
   for(int i = 0; i < events.size(); i++) {
@@ -50,7 +50,7 @@ void draw() {
     if(t.getString("token").equals("button-")) {
       uifxml.scenes.get("uiTester").editVarForm("count", uifxml.scenes.get("uiTester").getVar("count") + "-1");
     }
-  }
+  }*/
   
   condis.draw(); // Дисплейная консоль
   

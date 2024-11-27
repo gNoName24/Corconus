@@ -1,9 +1,9 @@
-<simplestyle>
+<base>
 	<style>
-		<stylebutton input="[token,y,text]">
+		<button input="[token,dis,y,text,textsize]">
 			<object type="button" token="{input.token}">
-				<position x="-{disW2}+150" y="-{disH2}+{input.y}"/>
-				<size x="200" y="70"/>
+				<position x="{input.dis}175" y="-{disH2}+(80*{input.y})"/>
+				<size x="250" y="70"/>
 				<fill>
 				<stage
 					r="32+({buttonState}*16)"
@@ -13,9 +13,9 @@
 				<round>8</round>
 				<object type="text">
 					<text>{input.text}</text>
-					<textSize>24</textSize>
+					<textSize>{input.textsize}</textSize>
 				</object>
 			</object>
-		</stylebutton>
+		</button>
 	</style>
-</simplestyle>
+</base>

@@ -25,6 +25,16 @@ class uifxml {
     events.get(typeEvent).add(event);
   }
   
+  XML vars;
+  HashMap<String, String> gvars;
+  void bv() {
+      gvars = new HashMap<String, String>();
+      XML[] temp_vars = vars.getChildren();
+      for(int i = 0; i < temp_vars.length; i++) {
+        gvars.put(temp_vars[i].getName(), temp_vars[i].getContent());
+      }
+    }
+  
   void setup() {
     pathMain = sketchPath()+"\\data\\uif\\";
     printlne("pathMain -", pathMain);
@@ -71,6 +81,10 @@ class uifxml {
     //stylesMerge = parseXML(formater(stylesMerge.toString(), map, "", ""));
     //printlne(stylesMerge);
     
+    // Загрузка глобальных переменных
+    vars = tempPack.getChild("globalvars");
+    if(vars != null) { bv(); }
+    
     for(int i = 0; i < sceneList.length; i++) {
       XML lef = sceneList[i];
       printlne("Загрузка сцены "+lef.getString("name"));
@@ -102,15 +116,17 @@ class uifxml {
     
     void buildLang() {
       DLC_lang = new HashMap<String, String>();
-      XML[] temp_lang = lang.getChild(globalLang).getChildren();
-      //println(temp_lang);
-      for(int i = 0; i < temp_lang.length; i++) {
-        DLC_lang.put(temp_lang[i].getName(), temp_lang[i].getContent());
-      }
-      // Пересборка с использованием replacement
-      for(int i = 0; i < temp_lang.length; i++) {
-        DLC_lang.remove(temp_lang[i].getName());
-        DLC_lang.put("lang."+temp_lang[i].getName(), replacement(temp_lang[i].getContent()));
+      if(lang.getChild(globalLang) != null) {
+        XML[] temp_lang = lang.getChild(globalLang).getChildren();
+        //println(temp_lang);
+        for(int i = 0; i < temp_lang.length; i++) {
+          DLC_lang.put(temp_lang[i].getName(), temp_lang[i].getContent());
+        }
+        // Пересборка с использованием replacement
+        for(int i = 0; i < temp_lang.length; i++) {
+          DLC_lang.remove(temp_lang[i].getName());
+          DLC_lang.put("lang."+temp_lang[i].getName(), replacement(temp_lang[i].getContent()));
+        }
       }
     }
     
@@ -302,13 +318,14 @@ class uifxml {
       
       map.putAll(userDLC);
       
-      map.putAll(DLC_lang);
-      if(DLC_vars != null) {
-        //map.putAll(DLC_vars);
-        for (String key : DLC_vars.keySet()) {
-          map.put("vars." + key, DLC_vars.get(key));
+      if(DLC_vars != null) { for (String key : DLC_vars.keySet()) { map.put("vars." + key, DLC_vars.get(key));
         }
       }
+      if(gvars != null) { for (String key : gvars.keySet()) { map.put("vars." + key, gvars.get(key));
+        }
+      }
+      
+      map.putAll(DLC_lang);
       
       // Стандартные переменные
       map.put("disW", str(disW)); map.put("disH", str(disH));
