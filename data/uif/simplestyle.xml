@@ -1,0 +1,21 @@
+<simplestyle>
+	<style>
+		<stylebutton input="[token,y,text]">
+			<object type="button" token="{input.token}">
+				<position x="-{disW2}+150" y="-{disH2}+{input.y}"/>
+				<size x="200" y="70"/>
+				<fill>
+				<stage
+					r="32+({buttonState}*16)"
+					g="32+({buttonState}*16)"
+					b="32+({buttonState}*16)" />
+				</fill>
+				<round>8</round>
+				<object type="text">
+					<text>{input.text}</text>
+					<textSize>24</textSize>
+				</object>
+			</object>
+		</stylebutton>
+	</style>
+</simplestyle>

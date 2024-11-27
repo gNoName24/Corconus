@@ -1,0 +1,75 @@
+[
+	{
+		"nameScene": "testui1",
+		"sceneData": [
+			{
+				"type": "text",
+				"text.color": ["(64+{vars.count})%255", "{vars.count}%127", "{vars.count}%63"],
+				"text.position_align": ["0", "0"],
+				"text.position": ["180", "100"],
+				"text.size": "32",
+				"text.text": "{lang.textcount}: {vars.count}"
+			},
+			{
+				"type": "button",
+				"id": "plus",
+				"button.color": [
+					["31+({buttonPress}*16)", "31+({buttonPress}*16)", "31+({buttonPress}*16)"]
+				],
+				"button.position_align": ["-{disW2}", "-{disH2}"],
+				"button.position": ["200", "70"],
+				"button.size": ["320", "65"],
+				"button.radii": "8",
+				"button.text.color": ["255", "255", "255"],
+				"button.text.size": "28",
+				"button.text.text": "{lang.button+}"
+			},
+			{
+				"type": "button",
+				"id": "minus",
+				"button.color": [
+					["31+({buttonPress}*16)", "31+({buttonPress}*16)", "31+({buttonPress}*16)"]
+				],
+				"button.position_align": ["-{disW2}", "-{disH2}"],
+				"button.position": ["200", "70+65"],
+				"button.size": ["320", "65"],
+				"button.radii": "8",
+				"button.text.color": ["255", "255", "255"],
+				"button.text.size": "28",
+				"button.text.text": "{lang.button-}"
+			},
+			{
+				"type": "button",
+				"id": "trueorfalse",
+				"button.color": [
+					["31+({buttonPress}*16)", "({vars.booleanvar}*127)+31+({buttonPress}*16)", "31+({buttonPress}*16)"]
+				],
+				"button.position_align": ["-{disW2}", "-{disH2}"],
+				"button.position": ["200", "70+130"],
+				"button.size": ["320", "65"],
+				"button.radii": "8",
+				"button.text.color": ["255", "255", "255"],
+				"button.text.size": "28",
+				"button.text.text": "{lang.tof}"
+			}
+		],
+		"variables": {
+			"count": 0,
+			"booleanvar": false
+		},
+		"langData": {
+			"ru": {
+				"textcount": "Счет",
+				"button+": "Плюс",
+				"button-": "Минус",
+				"tof": "НАЖМИ"
+			},
+			"en": {
+				"textcount": "Count",
+				"button+": "Plus",
+				"button-": "Minus",
+				"tof": "TAP по хомяку"
+			}
+		}
+	}
+]

@@ -1,0 +1,5 @@
+// Ядро conconus
+
+class crccore {
+  
+}

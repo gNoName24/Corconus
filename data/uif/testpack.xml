@@ -1,0 +1,27 @@
+<testpack>
+	<loadstyle file="simplestyle.xml"/>
+	<scene name="uiTester">
+		<data>
+			<object type="text">
+				<text>{lang.count}: {vars.count}</text>
+			</object>
+			<object>
+				<style id="stylebutton" token="button-" y="75" text="{lang.minus}"/>
+				<style id="stylebutton" token="button+" y="150" text="{lang.plus}"/>
+			</object>
+		</data>
+
+		<lang>
+			<ru>
+				<count>Счет</count>
+				<plus>Плюс</plus>
+				<minus>Минус</minus>
+			</ru>
+		</lang>
+
+		<vars>
+			<count>11</count>
+		</vars>
+
+	</scene>
+</testpack>
