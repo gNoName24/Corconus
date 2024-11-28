@@ -266,28 +266,39 @@ class uifxml {
     void recurs(XML init, float recx, float recy) {
       try {
         if(init.getName().equals("object")) {
-          // POSITION.x
-          float x = recx + (init.getChild("position") != null && init.getChild("position").getString("x") != null 
-            ? form(init.getChild("position").getString("x"))
-            : 0
-          );
-          // POSITION.y
-          float y = recy + (init.getChild("position") != null && init.getChild("position").getString("y") != null 
-            ? form(init.getChild("position").getString("y"))
-            : 0
-          );
-          String type = init.getString("type");
-          if(type != null) {
-            // TEXT
-            if(type.equals("text")) {
-              recurs_text(init, x, y);
+          Boolean hider;
+          if(init.getString("hider") == null) { hider = false;
+            if(init.getString("hiderif") != null) { // Второй вид hider, сравнение
+              if(!replacement(init.getString("hiderif")).equals(replacement(init.getString("hidereq")))) {
+                hider = true;
+              }
             }
-            // BUTTON
-            if(type.equals("button")) {
-              recurs_button(init, x, y);
-            }
+          } else { hider = boolean(replacement(init.getString("hider")));
           }
-          newRecurs(init.getChildren(), x, y);
+          if(!hider) {
+            // POSITION.x
+            float x = recx + (init.getChild("position") != null && init.getChild("position").getString("x") != null 
+              ? form(init.getChild("position").getString("x"))
+              : 0
+            );
+            // POSITION.y
+            float y = recy + (init.getChild("position") != null && init.getChild("position").getString("y") != null 
+              ? form(init.getChild("position").getString("y"))
+              : 0
+            );
+            String type = init.getString("type");
+            if(type != null) {
+              // TEXT
+              if(type.equals("text")) {
+                recurs_text(init, x, y);
+              }
+              // BUTTON
+              if(type.equals("button")) {
+                recurs_button(init, x, y);
+              }
+            }
+            newRecurs(init.getChildren(), x, y);
+          }
         }
       } catch(Exception e) {
         printlne(e.getMessage());

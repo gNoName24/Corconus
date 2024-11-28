@@ -1,18 +1,21 @@
 <corconus>
 	<loadstyle file="base.xml"/>
-	<scene name="menu">
+	<globalvars>
+		<scene></scene>
+	</globalvars>
+	<scene name="buttonbar">
 		<data>
-			<object>
-				<style id="button" token="project_open" dis="-{disW2}+" y="1" text="{lang.project_open}" textsize="26"/>
-				<style id="button" token="project_open" dis="-{disW2}+" y="2" text="{lang.project_open}22" textsize="26"/>
-				<style id="button" token="project_open" dis="-{disW2}+" y="3" text="{lang.project_open}333" textsize="26"/>
+			<!-- MAIN -->
+			<object hiderif="{vars.scene}" hidereq="main">
+				<style id="button" token="open_project" dis="-{disW2}+" y="1" text="{lang.open_project}" textsize="28"/>
 			</object>
 		</data>
 		<lang>
 			<ru>
-				<project_open>Открыть проект</project_open>
+				<open_project>Открыть проект</open_project>
 			</ru>
 		</lang>
-		<vars></vars>
+		<vars>
+		</vars>
 	</scene>
 </corconus>

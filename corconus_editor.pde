@@ -6,7 +6,10 @@ class crcecore {
   // Локализация
   String lang = "ru";
   
-  String scene = "menu";
+  String scene = "main";
+  // main
+  // project
+  // project_map
   
   void setup() {
     langSetup();
@@ -15,11 +18,12 @@ class crcecore {
   
   void draw() {
     fill(255);
-    uifxml.scenes.get(scene).render();
+    uifxml.gvars.put("scene", scene);
+    uifxml.scenes.get("buttonbar").render();
   }
   
   void mousePressed() {
-    
+    //uifxml.importPack("corconus.xml");
   }
   
   void mouseReleased() {

@@ -17,5 +17,39 @@
 				</object>
 			</object>
 		</button>
+		<buttondis input="[token,disx,disy,y,text,textsize]">
+			<object type="button" token="{input.token}">
+				<position x="{input.disx}175" y="{input.disy}(80*{input.y})"/>
+				<size x="250" y="70"/>
+				<fill>
+				<stage
+					r="32+({buttonState}*16)"
+					g="32+({buttonState}*16)"
+					b="32+({buttonState}*16)" />
+				</fill>
+				<round>8</round>
+				<object type="text">
+					<text>{input.text}</text>
+					<textSize>{input.textsize}</textSize>
+				</object>
+			</object>
+		</buttondis>
+		<buttonext input="[token,dis,x,y,sx,text,textsize]">
+			<object type="button" token="{input.token}">
+				<position x="{input.dis}(({input.x}*{input.sx})+(({input.sx}/2)+50))" y="-{disH2}+(80*{input.y})"/>
+				<size x="{input.sx}" y="70"/>
+				<fill>
+				<stage
+					r="32+({buttonState}*16)"
+					g="32+({buttonState}*16)"
+					b="32+({buttonState}*16)" />
+				</fill>
+				<round>8</round>
+				<object type="text">
+					<text>{input.text}</text>
+					<textSize>{input.textsize}</textSize>
+				</object>
+			</object>
+		</buttonext>
 	</style>
 </base>
