@@ -2,20 +2,59 @@
 	<loadstyle file="base.xml"/>
 	<globalvars>
 		<scene></scene>
+		<openedblock>none</openedblock>
 	</globalvars>
+	<globallang>
+		
+	</globallang>
 	<scene name="buttonbar">
 		<data>
 			<!-- MAIN -->
-			<object hiderif="{vars.scene}" hidereq="main">
-				<style id="button" token="open_project" dis="-{disW2}+" y="1" text="{lang.open_project}" textsize="28"/>
-			</object>
+			<if arg1="{vars.scene}" type="==" arg2="main">
+				<style id="button" token="open_project" dis="-{disW2}+" y="1" text="{lang.open_project}" textsize="26"/>
+			</if>
 		</data>
 		<lang>
 			<ru>
 				<open_project>Открыть проект</open_project>
 			</ru>
 		</lang>
+	</scene>
+	<scene name="openedblock">
+		<data>
+			<!-- OPEN PROJECT -->
+			<if arg1="{vars.openedblock}" type="==" arg2="open_project">
+				<style id="button" token="open_project_minus"
+					dis="{disW2}-" y="2" text="{lang.down}" textsize="26"/>
+				<style id="button" token="open_project_plus"
+					dis="{disW2}-" y="{vars.list_count}+3" text="{lang.up}" textsize="26"/>
+				<style id="buttonext" token="open_project_open"
+					dis="{disW2}-" x="0" y="1" sx="250" text="{lang.open}" textsize="26"/>
+				<!-- Цикл -->
+				<for varname="i" vardef="{vars.list}" varadd="1" varend="{vars.list_count}+{vars.list}">
+					<if arg1="{for.i}" type="!=" arg2="{vars.select}">
+						<style id="button" token="open_project_select{for.i}"
+							dis="{disW2}-" y="({for.i}+3)-{vars.list}" text="{for.i}" textsize="26"/>
+					</if>
+					<if arg1="{for.i}" type="==" arg2="{vars.select}">
+						<style id="buttonselect" token="open_project_select{for.i}"
+							dis="{disW2}-" y="({for.i}+3)-{vars.list}" text="{for.i}" textsize="26"/>
+					</if>
+				</for>
+			</if>
+		</data>
+		<lang>
+			<ru>
+				<open>Открыть</open>
+				<up>Вверх</up>
+				<down>Вниз</down>
+			</ru>
+		</lang>
 		<vars>
+			<list_count>2</list_count>
+			<max_list_count>3</max_list_count>
+			<list>0</list>
+			<select>1</select>
 		</vars>
 	</scene>
 </corconus>

@@ -13,13 +13,61 @@ class crcecore {
   
   void setup() {
     langSetup();
+    uifxml.globalLang = lang;
     uifxml.importPack("corconus.xml");
   }
   
+  Boolean openedblock = false;
   void draw() {
     fill(255);
     uifxml.gvars.put("scene", scene);
     uifxml.scenes.get("buttonbar").render();
+    uifxml.scenes.get("openedblock").render();
+    
+    // Обработка нажатий
+    ArrayList<JSONObject> events = uifxml.getEvents("buttonbar", "button.press");
+    for(int i = 0; i < events.size(); i++) {
+      JSONObject data = events.get(i);
+      String token = data.getString("token");
+      Boolean tap = false;
+      if(token.equals("open_project")) { tap = true; }
+      if(tap) {
+        if(!openedblock) { openedblock = true;
+          uifxml.gvars.put("openedblock", token);
+        } else {           openedblock = false;
+          uifxml.gvars.put("openedblock", "");
+        }
+      }
+    }
+    events = uifxml.getEvents("openedblock", "button.press");
+    for(int i = 0; i < events.size(); i++) {
+      JSONObject data = events.get(i);
+      String token = data.getString("token");
+      if(token.equals("open_project_plus")) {
+        uifxml.scenes.get("openedblock").editVarForm("list", uifxml.scenes.get("openedblock").getVar("list") + "+1");
+      } else  if(token.equals("open_project_minus")) {
+        uifxml.scenes.get("openedblock").editVarForm("list", uifxml.scenes.get("openedblock").getVar("list") + "-1");
+      }
+    }
+    
+    /*ArrayList<JSONObject> events = uifxml.getEvents("button.press");
+    for(int i = 0; i < events.size(); i++) {
+      JSONObject temp = events.get(i);
+      String token = temp.getString("token");
+      // MAIN: _BUTTON.PRESS.open_project
+      Boolean tap = false;
+      if(token.equals("open_project")) {
+        tap = true;
+      }
+      
+      if(tap) {
+        if(!openedblock) { openedblock = true;
+          uifxml.gvars.put("openedblock", token);
+        } else {           openedblock = false;
+          uifxml.gvars.put("openedblock", "");
+        }
+      }
+    }*/
   }
   
   void mousePressed() {

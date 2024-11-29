@@ -5,35 +5,44 @@ class uifxml {
   
   String globalLang = "ru";
   
-  HashMap<String, ArrayList> events = new HashMap<String, ArrayList>();
-  ArrayList getEvents(String typeEvent) {
+  // <Scene, <Event, Data>>
+  HashMap<String, HashMap<String, ArrayList>> events = new HashMap<String, HashMap<String, ArrayList>>();
+  ArrayList getEvents(String scene, String typeEvent) {
     ArrayList temp = new ArrayList();
-    try{
-      if(events.containsKey(typeEvent)) {
-        temp = events.get(typeEvent);
-        events.remove(typeEvent);
+    if(events.containsKey(scene)) {
+      if(events.get(scene).containsKey(typeEvent)) {
+        temp = events.get(scene).get(typeEvent);
+        events.get(scene).remove(typeEvent);
+      } else {
+        //printlne("Тип ивента (",typeEvent,") не найден в events.",scene);
       }
-    } catch(Exception e) {
-      printlne(e.getMessage());
+    } else {
+      //printlne("Сцена (",scene,") не найдена в events");
     }
     return temp;
   }
-  void addEvent(String typeEvent, JSONObject event) {
-    if(!events.containsKey(typeEvent)) {
-      events.put(typeEvent, new ArrayList());
+  void addEvent(String scene, String typeEvent, JSONObject event) {
+    if(!events.containsKey(scene)) {
+      events.put(scene, new HashMap<String, ArrayList>());
+      printlne("Автоматически добавлена сцена: " + scene);
     }
-    events.get(typeEvent).add(event);
+    HashMap<String, ArrayList> sceneEvents = events.get(scene);
+    if(!sceneEvents.containsKey(typeEvent)) {
+      sceneEvents.put(typeEvent, new ArrayList());
+      //printlne("Автоматически добавлен typeEvent: " + typeEvent + " в сцену: " + scene);
+    }
+    sceneEvents.get(typeEvent).add(event);
   }
   
   XML vars;
   HashMap<String, String> gvars;
   void bv() {
-      gvars = new HashMap<String, String>();
-      XML[] temp_vars = vars.getChildren();
-      for(int i = 0; i < temp_vars.length; i++) {
-        gvars.put(temp_vars[i].getName(), temp_vars[i].getContent());
-      }
+    gvars = new HashMap<String, String>();
+    XML[] temp_vars = vars.getChildren();
+    for(int i = 0; i < temp_vars.length; i++) {
+      gvars.put(temp_vars[i].getName(), temp_vars[i].getContent());
     }
+  }
   
   void setup() {
     pathMain = sketchPath()+"\\data\\uif\\";
@@ -61,8 +70,6 @@ class uifxml {
       loadedxml = parseXML(loadedxml.toString().replaceAll("<"+loadedxml.getName()+"[^>]*>", "").replaceAll("</"+loadedxml.getName()+">", ""));
       map.add(loadedxml);
     }
-    //printlne(map);
-    
     // Обьединение стилей
     XML[] styles = tempPack.getChildren("style");
     XML stylesMerge = new XML("style");
@@ -76,6 +83,9 @@ class uifxml {
         stylesMerge.addChild(child);
       }
     }
+    if(stylesMerge.getChildren("style") != null) {
+      printlne("В одном из стилей или в нескольких стилях вызывается <style> (это бесполезно)");
+    }
     //printlne(stylesMerge);
     //printlne(map);
     //stylesMerge = parseXML(formater(stylesMerge.toString(), map, "", ""));
@@ -85,14 +95,23 @@ class uifxml {
     vars = tempPack.getChild("globalvars");
     if(vars != null) { bv(); }
     
+    HashMap<String, HashMap<String, ArrayList>> events = new HashMap<String, HashMap<String, ArrayList>>();
+    
     for(int i = 0; i < sceneList.length; i++) {
       XML lef = sceneList[i];
       printlne("Загрузка сцены "+lef.getString("name"));
       ui ui = new ui();
       
+      // Выделение места в events под сцену
+      events.put(lef.getString("name"), new HashMap<String, ArrayList>());
+      //printlne(lef.getString("name"), new HashMap<String, ArrayList>());
+      
+      ui.sceneName = lef.getString("name");
       ui.data = lef.getChild("data");
       ui.lang = lef.getChild("lang");
+      if(ui.lang == null) { ui.lang = new XML("lang"); }
       ui.vars = lef.getChild("vars");
+      if(ui.vars == null) { ui.vars = new XML("vars"); }
       ui.style = stylesMerge;
       ui.buildLang();
       ui.buildVars();
@@ -100,6 +119,7 @@ class uifxml {
       
       scenes.put(lef.getString("name"), ui);
     }
+    printlne(events);
   }
   
   HashMap<String, ui> scenes = new HashMap<String, ui>();
@@ -155,34 +175,83 @@ class uifxml {
     // Создание рекурсии
     void newRecurs(XML rec[], float recx, float recy) {
       for(int i = 0; i < rec.length; i++) {
-        if(rec[i].getName().equals("object")) {
-          
+        // IF
+        if(rec[i].getName().equals("if")) {
+          String arg1 = replacement(rec[i].getString("arg1"));
+          String type = rec[i].getString("type");
+          String arg2 = replacement(rec[i].getString("arg2"));
+          int iarg1 = 0, iarg2 = 0;
+          if(type.equals("==")) {
+            if(arg1.equals(arg2)) { newRecurs(rec[i].getChildren(), recx, recy);
+            }
+          } else if(type.equals("!=")) {
+            if(!arg1.equals(arg2)) { newRecurs(rec[i].getChildren(), recx, recy);
+            }
+          } else {
+            iarg1 = int(eval(arg1));
+            iarg2 = int(eval(arg2));
+          }
+          if(type.equals("<=")) {
+            if(iarg1 <= iarg2) { newRecurs(rec[i].getChildren(), recx, recy);
+            }
+          } else
+          if(type.equals(">=")) {
+            if(iarg1 >= iarg2) { newRecurs(rec[i].getChildren(), recx, recy);
+            }
+          }
+        }
+        // FOR
+        if(rec[i].getName().equals("for")) {
+          for(int s = int(form(rec[i].getString("vardef"))); s < int(form(rec[i].getString("varend"))); s += int(form(rec[i].getString("varadd")))) {
+            userDLC.put("for."+replacement(rec[i].getString("varname")), str(s));
+            newRecurs(rec[i].getChildren(), recx, recy);
+          }
+        }
+        // STYLE
+        if(rec[i].getName().equals("style")) {
           // Использование STYLE
           // Получение всех <style></style>
-          XML[] allstyle = rec[i].getChildren("style");
+          XML allstyle = rec[i];
           //XML[] styles = style.getChildren();
           HashMap<String, String> temp = new HashMap<String, String>();
-          for(int s = 0; s < allstyle.length; s++) {
-            XML temp_style = style.getChild(allstyle[s].getString("id"));
-            
-            // Получение нужных аргументов
-            JSONArray argslist = parseJSONArray(temp_style.getString("input").toString());
-            
-            // Получение значений аргументов из allstyle[s]
-            HashMap<String, String> finalargs = new HashMap<String, String>();
-            for(int s2 = 0; s2 < argslist.size(); s2++) {
-              finalargs.put("input."+argslist.getString(s2), allstyle[s].getString(argslist.getString(s2)));
-            }
-            
-            // Применение аргументов из finalargs к temp_style
-            temp_style = parseXML(formater(temp_style.toString(), finalargs));
-            
-            temp.put(allstyle[s].toString(), temp_style.toString().replaceAll("<"+temp_style.getName()+"[^>]*>", "").replaceAll("</"+temp_style.getName()+">", ""));
+          XML temp_style = style.getChild(allstyle.getString("id"));
+          // Получение нужных аргументов
+          JSONArray argslist = parseJSONArray(temp_style.getString("input").toString());
+          // Получение значений аргументов из allstyle[s]
+          HashMap<String, String> finalargs = new HashMap<String, String>();
+          for(int s2 = 0; s2 < argslist.size(); s2++) {
+            finalargs.put("input."+argslist.getString(s2), allstyle.getString(argslist.getString(s2)));
           }
+          // Применение аргументов из finalargs к temp_style
+          temp_style = parseXML(formater(temp_style.toString(), finalargs));
+          temp.put(allstyle.toString(), temp_style.toString().replaceAll("<"+temp_style.getName()+"[^>]*>", "").replaceAll("</"+temp_style.getName()+">", ""));
           rec[i] = parseXML( formater(rec[i].toString(), temp, "", "") );
-          
           recurs(rec[i], recx, recy);
         }
+        // OBJECT
+        if(rec[i].getName().equals("object")) {
+          recurs(rec[i], recx, recy);
+        }
+      }
+    }
+    
+    void recurs_interpretation_stroke(XML temp) {
+      XML datastroke = temp.getChild("stroke");
+      if(datastroke != null) {
+        // FILL
+        float rgba[] = {255,255,255,255};
+        if(temp.getChild("fill") != null) {
+          rgba[0] = datastroke.getChild("fill").getString("r") != null ? form(datastroke.getChild("fill").getString("r")) : 255;
+          rgba[1] = datastroke.getChild("fill").getString("g") != null ? form(datastroke.getChild("fill").getString("g")) : 255;
+          rgba[2] = datastroke.getChild("fill").getString("b") != null ? form(datastroke.getChild("fill").getString("b")) : 255;
+          rgba[3] = datastroke.getChild("fill").getString("a") != null ? form(datastroke.getChild("fill").getString("a")) : 255;
+        }
+        // SIZE
+        float size = datastroke.getChild("size") != null
+          ? form(datastroke.getChild("size").getContent())
+          : 1;
+        strokeWeight(size);
+        stroke(rgba[0], rgba[1], rgba[2], rgba[3]);
       }
     }
     
@@ -205,8 +274,10 @@ class uifxml {
         ? form(temp.getChild("textSize").getContent())
         : 32;
       fill(rgba[0], rgba[1], rgba[2], rgba[3]);
-      stext(text, x, y, textSize);
+      stext(text, x, y+2.5, textSize);
     }
+    
+    Boolean taplock = false;
     
     // Кнопка
     void recurs_button(XML temp, float x, float y) {
@@ -240,42 +311,64 @@ class uifxml {
           rgba[i][3] = stages[i].getString("a") != null ? form(stages[i].getString("a")) : 255;
         }
       }
+      // STROKEILL
+      float strrgba[][] = new float[0][4];
+      if(temp.getChild("strokefill") != null) {
+        XML[] stages = temp.getChild("strokefill").getChildren("stage");
+        strrgba = new float[stages.length][4];
+        for(int i = 0; i < stages.length; i++) {
+          strrgba[i][0] = stages[i].getString("r") != null ? form(stages[i].getString("r")) : 255;
+          strrgba[i][1] = stages[i].getString("g") != null ? form(stages[i].getString("g")) : 255;
+          strrgba[i][2] = stages[i].getString("b") != null ? form(stages[i].getString("b")) : 255;
+          strrgba[i][3] = stages[i].getString("a") != null ? form(stages[i].getString("a")) : 255;
+        }
+      }
       // ROUND
       float round = temp.getChild("round") != null
         ? form(temp.getChild("round").getContent())
         : 0;
-      clearudlc();
       if(rgba.length == 1) {
         fill(rgba[0][0], rgba[0][1], rgba[0][2], rgba[0][3]);
       } else {
         fill(rgba[buttonState][0], rgba[buttonState][1], rgba[buttonState][2], rgba[buttonState][3]);
       }
+      if(strrgba.length != 0) {
+        if(strrgba.length == 1) {
+          stroke(strrgba[0][0], strrgba[0][1], strrgba[0][2], strrgba[0][3]);
+        } else {
+          stroke(strrgba[buttonState][0], strrgba[buttonState][1], strrgba[buttonState][2], strrgba[buttonState][3]);
+        }
+      }
       sblockRound(x,y,sx,sy,round);
+      noStroke();
       
       // Обработка нажатия
-      if(mousePressed && tap(x,y,sx,sy)) {
-        JSONObject event = new JSONObject();
-        event.setString("token", temp.getString("token"));
-        event.setFloat("size.x", sx).setFloat("size.y", sy);
-        event.setFloat("position.x", x).setFloat("position.y", y);
-        addEvent("button.press", event);
-      }
+      if(mousePressed) {
+        if(!taplock && tap(x,y,sx,sy)) {
+          taplock = true;
+          JSONObject event = new JSONObject();
+          event.setString("token", temp.getString("token"));
+          event.setFloat("size.x", sx).setFloat("size.y", sy);
+          event.setFloat("position.x", x).setFloat("position.y", y);
+          addEvent(sceneName, "button.press", event);
+        }
+      } else { taplock = false; }
     }
     
     // Рекурсия
     void recurs(XML init, float recx, float recy) {
       try {
         if(init.getName().equals("object")) {
-          Boolean hider;
-          if(init.getString("hider") == null) { hider = false;
-            if(init.getString("hiderif") != null) { // Второй вид hider, сравнение
-              if(!replacement(init.getString("hiderif")).equals(replacement(init.getString("hidereq")))) {
-                hider = true;
+          Boolean shower;
+          if(init.getString("shower") == null) { shower = true;
+            if(init.getString("showerif") != null) { // Второй вид hider, сравнение
+              if(!replacement(init.getString("showerif")).equals(replacement(init.getString("showereq")))) {
+                shower = false;
               }
             }
-          } else { hider = boolean(replacement(init.getString("hider")));
+          } else { shower = boolean(replacement(init.getString("shower")));
           }
-          if(!hider) {
+          if(shower) {
             // POSITION.x
             float x = recx + (init.getChild("position") != null && init.getChild("position").getString("x") != null 
               ? form(init.getChild("position").getString("x"))
@@ -288,6 +381,7 @@ class uifxml {
             );
             String type = init.getString("type");
             if(type != null) {
+              recurs_interpretation_stroke(init);
               // TEXT
               if(type.equals("text")) {
                 recurs_text(init, x, y);
@@ -296,6 +390,7 @@ class uifxml {
               if(type.equals("button")) {
                 recurs_button(init, x, y);
               }
+              noStroke();
             }
             newRecurs(init.getChildren(), x, y);
           }
@@ -324,20 +419,20 @@ class uifxml {
     
     HashMap<String, String> userDLC = new HashMap<String, String>();
     void clearudlc() { userDLC = new HashMap<String, String>(); }
+    
+    // Другая система кастомных значений
+    
+    
     String replacement(String string) {
       HashMap<String, String> map = new HashMap<String, String>();
-      
       map.putAll(userDLC);
-      
       if(DLC_vars != null) { for (String key : DLC_vars.keySet()) { map.put("vars." + key, DLC_vars.get(key));
         }
       }
       if(gvars != null) { for (String key : gvars.keySet()) { map.put("vars." + key, gvars.get(key));
         }
       }
-      
       map.putAll(DLC_lang);
-      
       // Стандартные переменные
       map.put("disW", str(disW)); map.put("disH", str(disH));
       map.put("disW2", str(disW2)); map.put("disH2", str(disH2));
@@ -347,15 +442,7 @@ class uifxml {
       map.put("mouseX", str(mouseX)); map.put("mouseY", str(mouseY));
       map.put("TOP", str(TOP)); map.put("DOWN", str(DOWN)); map.put("LEFT", str(LEFT)); map.put("RIGHT", str(RIGHT));
       map.put("mousePressed", str(int(mousePressed)));
-      
-      //println(map);
-      
       return formater(string, map);
-    }
-    
-    // Кастомная функция кнопки
-    void button(float x, float y, float sx, float sy, float b) {
-      sblockRound(x,y,sx,sy,b);
     }
   }
 }

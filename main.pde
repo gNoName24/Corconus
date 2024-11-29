@@ -54,7 +54,7 @@ void draw() {
   
   condis.draw(); // Дисплейная консоль
   
-  //debug();
+  debug();
 }
 
 void mousePressed() {

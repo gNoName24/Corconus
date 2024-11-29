@@ -2,32 +2,78 @@
 	<style>
 		<button input="[token,dis,y,text,textsize]">
 			<object type="button" token="{input.token}">
-				<position x="{input.dis}175" y="-{disH2}+(80*{input.y})"/>
+				<position x="{input.dis}175" y="-{disH2}+(80*({input.y}))"/>
 				<size x="250" y="70"/>
 				<fill>
-				<stage
-					r="32+({buttonState}*16)"
-					g="32+({buttonState}*16)"
-					b="32+({buttonState}*16)" />
-				</fill>
-				<round>8</round>
+					<stage
+						r="32+({buttonState}*8)"
+						g="32+({buttonState}*8)"
+						b="32+({buttonState}*8)" /> </fill>
+				<strokefill>
+					<stage
+						r="{buttonState}*255"
+						g="{buttonState}*255"
+						b="{buttonState}*255" /> </strokefill>
+				<round>5</round>
 				<object type="text">
 					<text>{input.text}</text>
 					<textSize>{input.textsize}</textSize>
 				</object>
 			</object>
 		</button>
+		<buttonselect input="[token,dis,y,text,textsize]">
+			<object type="button" token="{input.token}">
+				<position x="{input.dis}175" y="-{disH2}+(80*({input.y}))"/>
+				<size x="250" y="70"/>
+				<fill>
+					<stage
+						r="32+({buttonState}*8)"
+						g="32+({buttonState}*8)"
+						b="32+({buttonState}*8)" /> </fill>
+				<stroke> <fill r="127" g="255" b="127"/> </stroke>
+				<round>5</round>
+				<object type="text">
+					<text>{input.text}</text>
+					<textSize>{input.textsize}</textSize>
+				</object>
+			</object>
+		</buttonselect>
+		<buttoncsx input="[token,dis,y,sx,text,textsize]">
+			<object type="button" token="{input.token}">
+				<position x="{input.dis}175-(({input.sx})/2)" y="-{disH2}+(80*({input.y}))"/>
+				<size x="250+({input.sx})" y="70"/>
+				<fill>
+					<stage
+						r="32+({buttonState}*8)"
+						g="32+({buttonState}*8)"
+						b="32+({buttonState}*8)" /> </fill>
+				<strokefill>
+					<stage
+						r="{buttonState}*255"
+						g="{buttonState}*255"
+						b="{buttonState}*255" /> </strokefill>
+				<round>5</round>
+				<object type="text">
+					<text>{input.text}</text>
+					<textSize>{input.textsize}</textSize>
+				</object>
+			</object>
+		</buttoncsx>
 		<buttondis input="[token,disx,disy,y,text,textsize]">
 			<object type="button" token="{input.token}">
-				<position x="{input.disx}175" y="{input.disy}(80*{input.y})"/>
+				<position x="{input.disx}175" y="{input.disy}(80*({input.y}))"/>
 				<size x="250" y="70"/>
 				<fill>
 				<stage
-					r="32+({buttonState}*16)"
-					g="32+({buttonState}*16)"
-					b="32+({buttonState}*16)" />
-				</fill>
-				<round>8</round>
+					r="32+({buttonState}*8)"
+					g="32+({buttonState}*8)"
+					b="32+({buttonState}*8)" /> </fill>
+				<strokefill>
+					<stage
+						r="{buttonState}*255"
+						g="{buttonState}*255"
+						b="{buttonState}*255" /> </strokefill>
+				<round>5</round>
 				<object type="text">
 					<text>{input.text}</text>
 					<textSize>{input.textsize}</textSize>
@@ -36,15 +82,19 @@
 		</buttondis>
 		<buttonext input="[token,dis,x,y,sx,text,textsize]">
 			<object type="button" token="{input.token}">
-				<position x="{input.dis}(({input.x}*{input.sx})+(({input.sx}/2)+50))" y="-{disH2}+(80*{input.y})"/>
+				<position x="{input.dis}((({input.x})*({input.sx}))+((({input.sx})/2)+50))" y="-{disH2}+(80*({input.y}))"/>
 				<size x="{input.sx}" y="70"/>
 				<fill>
 				<stage
-					r="32+({buttonState}*16)"
-					g="32+({buttonState}*16)"
-					b="32+({buttonState}*16)" />
-				</fill>
-				<round>8</round>
+					r="32+({buttonState}*8)"
+					g="32+({buttonState}*8)"
+					b="32+({buttonState}*8)" /> </fill>
+				<strokefill>
+					<stage
+						r="{buttonState}*255"
+						g="{buttonState}*255"
+						b="{buttonState}*255" /> </strokefill>
+				<round>5</round>
 				<object type="text">
 					<text>{input.text}</text>
 					<textSize>{input.textsize}</textSize>
