@@ -13,16 +13,20 @@ class crcecore {
   
   void setup() {
     langSetup();
-    uifxml.globalLang = lang;
-    uifxml.importPack("corconus.xml");
+    //uifxml.globalLang = lang;
+    //uifxml.importPack("corconus.xml");
   }
   
   Boolean openedblock = false;
   void draw() {
     fill(255);
-    uifxml.gvars.put("scene", scene);
+    /*uifxml.gvars.put("scene", scene);
     uifxml.scenes.get("buttonbar").render();
     uifxml.scenes.get("openedblock").render();
+    
+    if(uifxml.getGVar("openedblock").equals("open_project")) {
+      
+    }
     
     // Обработка нажатий
     ArrayList<JSONObject> events = uifxml.getEvents("buttonbar", "button.press");
@@ -48,7 +52,7 @@ class crcecore {
       } else  if(token.equals("open_project_minus")) {
         uifxml.scenes.get("openedblock").editVarForm("list", uifxml.scenes.get("openedblock").getVar("list") + "-1");
       }
-    }
+    }*/
     
     /*ArrayList<JSONObject> events = uifxml.getEvents("button.press");
     for(int i = 0; i < events.size(); i++) {

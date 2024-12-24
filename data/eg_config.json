@@ -1,0 +1,9 @@
+{
+	"fps": {
+		"maximum": 60
+	},
+
+	"experimental": {
+		"debug": false
+	}
+}

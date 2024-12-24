@@ -31,16 +31,16 @@
 				<style id="buttonext" token="open_project_open"
 					dis="{disW2}-" x="0" y="1" sx="250" text="{lang.open}" textsize="26"/>
 				<!-- Цикл -->
-				<for varname="i" vardef="{vars.list}" varadd="1" varend="{vars.list_count}+{vars.list}">
+				<for varname="i" vardef="0" varadd="1" varend="{vars.list_count}">
 					<if arg1="{for.i}" type="!=" arg2="{vars.select}">
 						<style id="button" token="open_project_select{for.i}"
-							dis="{disW2}-" y="({for.i}+3)-{vars.list}" text="{for.i}" textsize="26"/>
+							dis="{disW2}-" y="{for.i}+3" text="{for.i}" textsize="26"/>
 					</if>
 					<if arg1="{for.i}" type="==" arg2="{vars.select}">
 						<style id="buttonselect" token="open_project_select{for.i}"
-							dis="{disW2}-" y="({for.i}+3)-{vars.list}" text="{for.i}" textsize="26"/>
+							dis="{disW2}-" y="{for.i}+3" text="{for.i}" textsize="26"/>
 					</if>
-				</for>
+				</for>-
 			</if>
 		</data>
 		<lang>
@@ -51,10 +51,10 @@
 			</ru>
 		</lang>
 		<vars>
-			<list_count>2</list_count>
+			<list_count>3</list_count>
 			<max_list_count>3</max_list_count>
 			<list>0</list>
-			<select>1</select>
+			<select>-1</select>
 		</vars>
 	</scene>
 </corconus>

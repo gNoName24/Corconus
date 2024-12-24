@@ -1,24 +1,34 @@
+import g4p_controls.*;
+import java.io.File;
+
 consoleDis condis = new consoleDis();
 
 void setup() {
   size(1280, 720, P2D);
+  //((PGraphicsOpenGL)g).textureSampling(3);
   surface.setResizable(true);
   surface.setLocation(100, 50);
   textSize(32);
+  disUpdate();
   cdm_st = condis;
-  //uif.setup();
-  //uif.loadPack("testpack.json");
-  //uif.changeLang("en");
-  uifxml.setup();
-  //uifxml.importPack("testpack.xml");
   crcecore.setup();
+  crceg.setup();
+  crceg.win0_setup();
+  crceg.win1_setup();
 }
 
 void draw() {
   background(0);
   disUpdate();
+  //fill(0,64);
+  //rect(0,0,disW,disH);
   
-  crcecore.draw();
+  //testwin.x = mouseX;
+  //testwin.y = mouseY;
+  
+  windowsRender.render();
+  
+  //crcecore.draw();
   
   /*uif.scenes.get("testui1").render();
   JSONArray events = uif.getEvents();
@@ -54,10 +64,18 @@ void draw() {
   
   condis.draw(); // Дисплейная консоль
   
-  debug();
+  //debug();
 }
 
 void mousePressed() {
+  
+  /*testwin.actMP = testwin.new actionMP() { void run() {
+    if(testwin.gl.oldtap(0,0,50,50)) {
+      printlne("tap", toString2(testwin.gl));
+    }
+  } };*/
+  
+  windowsRender.mousePressed();
   crcecore.mousePressed();
 }
 

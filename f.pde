@@ -44,7 +44,7 @@ void debug() {
     "Memory Usage Percentage: " + round(getMemoryUsagePercentage()) + "%";
     //"cameraPos:"+testscene.playerCam;
   fill(0,127-32);
-  rect(0, 0, 35+textWidth(text), lengthLine(text)*32);
+  rect(0, 0, 35+textWidth(text), lengthLine(text)*24);
   fill(255);
   stext(LEFT, TOP, text, -disW2+20, disH2-20, 16);
 }
@@ -78,6 +78,91 @@ float eval(String expr) {
     printlne("EVAL ERROR:", expr);
     return (frameCount*2)%rand(20,40);
   }
+}
+
+import java.lang.reflect.Field;
+/*import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
+public static String toString2(Object obj) {
+  return toString2(obj, new HashSet<>());
+}
+private static String toString2(Object obj, Set<Object> visited) {
+  if (obj == null) return "null";
+
+  StringBuilder sb = new StringBuilder();
+  Class<?> clazz = obj.getClass();
+
+  // Если объект - это примитив или строка
+  if (isPrimitiveOrWrapper(clazz) || clazz == String.class) {
+    return String.valueOf(obj);
+  }
+
+  // Предотвращаем зацикливание
+  if (visited.contains(obj)) {
+    return clazz.getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(obj));
+  }
+
+  // Добавляем объект в "посещённые"
+  visited.add(obj);
+
+  sb.append(clazz.getSimpleName()).append(" {");
+  for (Field field : clazz.getDeclaredFields()) {
+    // Игнорируем статические поля
+    if (Modifier.isStatic(field.getModifiers())) {
+      continue;
+    }
+
+    // Делаем поле доступным для чтения
+    try {
+      field.setAccessible(true);
+      Object value = field.get(obj);
+      sb.append(field.getName()).append("=");
+
+      if (value != null && !isPrimitiveOrWrapper(value.getClass())) {
+        // Рекурсивно обрабатываем вложенные объекты
+        sb.append(toString2(value, visited));
+      } else {
+        sb.append(value);
+      }
+      sb.append(", ");
+    } catch (Exception e) {
+      //sb.append(field.getName()).append("=<inaccessible>, ");
+    }
+  }
+
+  if (sb.length() > 2) sb.setLength(sb.length() - 2); // Удаляем последнюю запятую
+  sb.append("}");
+  return sb.toString();
+}
+private static boolean isPrimitiveOrWrapper(Class<?> clazz) {
+  return clazz.isPrimitive() ||
+         clazz == Integer.class || clazz == Long.class || clazz == Short.class ||
+         clazz == Byte.class || clazz == Float.class || clazz == Double.class ||
+         clazz == Boolean.class || clazz == Character.class || clazz == String.class;
+}*/
+public static String toString2(Object obj) {
+  if (obj == null) return "null";
+  
+  StringBuilder sb = new StringBuilder();
+  Class<?> clazz = obj.getClass();
+  
+  //sb.append(clazz.getSimpleName()).append(" {");
+  sb.append("{");
+  for (Field field : clazz.getDeclaredFields()) {
+    field.setAccessible(true); // Делаем поле доступным для чтения
+    try {
+      sb.append(field.getName())
+        .append("=")
+        .append(field.get(obj))
+        .append(", ");
+    } catch (IllegalAccessException e) {
+      sb.append(field.getName()).append("=<inaccessible>, ");
+    }
+  }
+  if (sb.length() > 2) sb.setLength(sb.length() - 2); // Удаляем последнюю запятую
+  sb.append("}");
+  return sb.toString();
 }
 
 
@@ -352,6 +437,58 @@ class consoleDis {
       if(displayConsoleTime.get(i) <= 0) { // удаление сообщения
         displayConsoleTime.remove(i);
         displayConsole.remove(i);
+      }
+    }
+  }
+}
+
+class messageZone {
+  messageZone() {}
+  
+  int holdI = 0;
+  int mx = 0, my = 0;
+  
+  int toggle = 15;
+  color rectcolor;
+  float textSize;
+  String text;
+  Boolean okhold = false;
+  int animalpha = 0;
+  int animfor = 32;
+  
+  void zone(int x, int y, int xs, int xy) {
+    if(animalpha >= 255) {
+      animalpha = 255;
+    }
+    noStroke();
+    fill(rectcolor, animalpha);
+    textSize(textSize);
+    rect(mouseX, mouseY, (textWidth(text)+textSize), textSize+8);
+    fill(255, animalpha);
+    textAlign(LEFT, TOP);
+    text(text, mouseX+10, mouseY+4);
+    //printlne(animalpha);
+    if(oldtap(x,y,xs,xy)) {
+      if(okhold) {
+        animalpha+=animfor;
+      }
+      if(mx == mouseX && my == mouseY) {
+        holdI++;
+        if(holdI >= toggle) {
+          if(!okhold) {
+            animalpha = 0;
+          }
+          okhold = true;
+        }
+      } else {
+        holdI = 0;
+        mx = mouseX;
+        my = mouseY;
+      }
+    } else {
+      animalpha-=animfor;
+      if(animalpha <= 0) {
+        okhold = false;
       }
     }
   }

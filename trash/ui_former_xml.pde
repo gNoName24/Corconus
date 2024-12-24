@@ -36,6 +36,9 @@ class uifxml {
   
   XML vars;
   HashMap<String, String> gvars;
+  String getGVar(String key) {
+    return uifxml.gvars.get(key);
+  }
   void bv() {
     gvars = new HashMap<String, String>();
     XML[] temp_vars = vars.getChildren();
@@ -215,6 +218,16 @@ class uifxml {
           //XML[] styles = style.getChildren();
           HashMap<String, String> temp = new HashMap<String, String>();
           XML temp_style = style.getChild(allstyle.getString("id"));
+          println(temp_style);
+          
+          // Применение стилей внутри стиля
+          XML[] temp_style_style = temp_style.getChildren(allstyle.getString("style"));
+          for(int s = 0; s < temp_style_style.length; s++) {
+            if(temp_style_style[i].getName().equals("style")) {
+              
+            }
+          }
+          
           // Получение нужных аргументов
           JSONArray argslist = parseJSONArray(temp_style.getString("input").toString());
           // Получение значений аргументов из allstyle[s]
